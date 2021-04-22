@@ -4,4 +4,23 @@ module.exports = gql`
     type Query {
         totalPosts: Int!
     }
+
+    type Query {
+        allPosts: [Post]!
+    }
+
+    type Post {
+        id: ID!
+        title: String!
+        description: String!
+    }
+
+    input PostInput {
+        title: String!
+        description: String!
+    }
+
+    type Mutation {
+        newPost(input: PostInput!): Post!
+    }
 `;
