@@ -7,6 +7,7 @@ module.exports = gql`
 
     type Query {
         allPosts: [Post]!
+        postsFromDb: [Post]!
     }
 
     type Post {

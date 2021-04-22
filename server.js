@@ -5,28 +5,30 @@ const { makeExecutableSchema } = require("graphql-tools")
 const { mergeTypeDefs, mergeResolvers } = require("@graphql-tools/merge")
 const { loadFilesSync } = require("@graphql-tools/load-files")
 const path = require('path');
-const mongoose = require('mongoose');
+// const mongoose = require('mongoose');
+const db = require('./config/connection');
+
 
 require('dotenv').config();
 
 const app = express();
 
 // db
-const db = async () => {
-    try {
-        const success = await mongoose.connect(process.env.DATABASE, {
-            useNewUrlParser: true,
-            useUnifiedTopology: true,
-            useCreateIndex: true,
-            useFindAndModify: false
-        });
-        console.log('DB Connected');
-    } catch (error) {
-        console.log('DB Connection Error', error);
-    }
-};
-// execute database connection
-db();
+// const db = async () => {
+//     try {
+//         const success = await mongoose.connect(process.env.DATABASE, {
+//             useNewUrlParser: true,
+//             useUnifiedTopology: true,
+//             useCreateIndex: true,
+//             useFindAndModify: false
+//         });
+//         console.log('DB Connected');
+//     } catch (error) {
+//         console.log('DB Connection Error', error);
+//     }
+// };
+// // execute database connection
+// db();
 
 // types query / mutation / subscription
 const typeDefs = mergeTypeDefs(
@@ -54,7 +56,9 @@ app.get('/rest', (req, res) => {
     });
 });
 
-app.listen(process.env.PORT, () => {
-    console.log(`server listening at port ${process.env.PORT}`);
-    console.log(`gql server listening at port ${process.env.PORT}${apolloServer.graphqlPath}`);
+db.once('open', () => {
+    app.listen(process.env.PORT, () => {
+        console.log(`server listening at port ${process.env.PORT}`);
+        console.log(`gql server listening at port ${process.env.PORT}${apolloServer.graphqlPath}`);
+    });
 });
